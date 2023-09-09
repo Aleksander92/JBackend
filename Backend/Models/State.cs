@@ -16,6 +16,7 @@ public class ModeState {
     public int CorrectAttempts { get; set; } = 0;
     public string? TaskQuestion { get; set; }
     public string? TaskAnswer { get; set; }
+    public string? PrevTaskAnswer { get; set; }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,7 +31,8 @@ public class ModeState {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     
-    public void SetTask((string, string) task) { 
+    public void SetTask((string, string) task) {
+        PrevTaskAnswer = TaskAnswer;
         TaskQuestion = task.Item1;
         TaskAnswer = task.Item2;
     }

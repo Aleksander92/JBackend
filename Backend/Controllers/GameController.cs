@@ -117,8 +117,6 @@ namespace Backend.Controllers
         [AllowCrossSite]
         [Route("check_answer_and_make_new_task")]
         public async Task<ActionResult<ModeState>> CheckAnswerAndMakeNewTask(int id, string userAnswer) {
-            Console.WriteLine(id);
-            Console.WriteLine(userAnswer);
             if (Context.States == null) {
                 return NotFound();
             }
