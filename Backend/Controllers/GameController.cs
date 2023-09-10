@@ -42,11 +42,13 @@ namespace Backend.Controllers
         }
 
         private (string, string) GenerateTask(ModeState.EMode mode) {
-            if ((ModeState.EMode)mode == ModeState.EMode.EModeEnglishToHiragana) {
+            if (mode == ModeState.EMode.EModeEnglishToHiragana || mode == ModeState.EMode.EModeHiraganaToEnglish) {
                 Random random = new Random();
                 int taskInd = random.Next(Hiragana.Length);
                 var task = Hiragana[taskInd];
-                (task.Item1, task.Item2) = (task.Item2, task.Item1);
+                if (mode == ModeState.EMode.EModeEnglishToHiragana) {
+                    (task.Item1, task.Item2) = (task.Item2, task.Item1);
+                }
                 return task;
             } else {
                 throw new NotImplementedException();
@@ -144,8 +146,7 @@ namespace Backend.Controllers
         [AllowCrossSite]
         [Route("create_game")]
         public async Task<ActionResult<ModeState>> CreateGame(int mode) {
-            if (Context.States == null)
-            {
+            if (Context.States == null) {
                 return Problem("Entity set 'Context.States' is null.");
             }
 
