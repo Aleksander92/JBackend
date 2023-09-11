@@ -41,22 +41,27 @@ namespace Backend.Controllers
             }
         }
 
-        private (string, string) GenerateTask(ModeState.EMode mode) {
+        private (string, string) GenerateTask(ModeState.EMode mode, string? prevTaskQuestion = null) {
             if (mode == ModeState.EMode.EModeEnglishToHiragana || mode == ModeState.EMode.EModeHiraganaToEnglish) {
-                Random random = new Random();
-                int taskInd = random.Next(Hiragana.Length);
-                var task = Hiragana[taskInd];
-                if (mode == ModeState.EMode.EModeEnglishToHiragana) {
-                    (task.Item1, task.Item2) = (task.Item2, task.Item1);
+                while (true) {
+                    Random random = new Random();
+                    int taskInd = random.Next(Hiragana.Length);
+                    var task = Hiragana[taskInd];
+                    if (mode == ModeState.EMode.EModeEnglishToHiragana) {
+                        (task.Item1, task.Item2) = (task.Item2, task.Item1);
+                    }
+                    if (task.Item1 == prevTaskQuestion) {
+                        continue;
+                    }
+                    return task;
                 }
-                return task;
             } else {
                 throw new NotImplementedException();
             }
         }
 
-        private (string, string) GenerateTask(int mode) {
-            return GenerateTask((ModeState.EMode)mode);
+        private (string, string) GenerateTask(int mode, string? prevTaskQuestion = null) {
+            return GenerateTask((ModeState.EMode)mode, prevTaskQuestion);
         }
 
         private async Task<ModeState> CreateState(int mode) {
@@ -132,7 +137,7 @@ namespace Backend.Controllers
             if (state.TaskAnswer == userAnswer) {
                 ++state.CorrectAttempts;
             }
-            state.SetTask(GenerateTask(state.Mode));
+            state.SetTask(GenerateTask(state.Mode, state.TaskQuestion));
 
             Context.States.Update(state);
             await Context.SaveChangesAsync();
